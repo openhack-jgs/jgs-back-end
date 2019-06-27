@@ -134,10 +134,16 @@ if (cluster.isMaster) {
 
     db.collection('post').add(post_info)
     .then((docRef) => {
-      res.status(200);
-      res.send('OK');
-    })
-    .catch((error) => {
+      db.collection('post').doc(docRef.id).update({
+        post_id: docRef.id
+      }).then(() => {
+        res.status(200);
+        res.send('OK');
+      }).catch((error) => {
+        console.log(error);
+        res.send('FAIL'); 
+      })
+    }).catch((error) => {
       console.log(error);
       res.send('FAIL');
     })
@@ -215,8 +221,8 @@ if (cluster.isMaster) {
         url_info['og:title'] = "null"
       if (!url_info['og:description'])
         url_info['og:description'] = "null"
-      if (!url_info['og:img'])
-        url_info['og:img'] = "null"
+      if (!url_info['og:image'])
+        url_info['og:image'] = "null"
       if (!url_info['og:url'])
         url_info['og:url'] = "null"
 
