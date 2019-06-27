@@ -158,32 +158,33 @@ if (cluster.isMaster) {
   })
 
   // URL에 대한 미리보기 정보들을 크롤링하는 기능
+  // GET http://106.10.34.9:3000/analysis_url?url=https://inthewalter.github.io
+  // TODO: http or https 를 안썼을 때, 받아오지 않음
   app.get('/analysis_url', function (req, res) {
-    //request.get({url: 'https://inthewalter.github.io/'}, function(err, res, body) {
-    let arr = []
-    request.get({url: 'https://dev.to/ananyaneogi/html-can-do-that-c0n'}, function(err, res2, body) {
+    request.get({url: req.param('url')}, function(err, res2, body) {
       const $ = cheerio.load(body);
       const cnt = $("meta")
+      var url_info = {};
 
       for (let i = 0; i < cnt.length; i++) {
         if (cnt[i]['attribs']['property'] === undefined) {
         //console.log('non-property');
         }
         else {
-          const data = {
-          property : cnt[i]['attribs']['property'],
-          content : cnt[i]['attribs']['content']
-          }
-          arr.push(data);
-          console.log(data);
+          url_info[cnt[i]['attribs']['property']] = cnt[i]['attribs']['content'];
         }
       }
-      
-      //res.send(arr);
-      var t = { '1': '1234'};
-      res.send(t);
+      if (!url_info['og:title'])
+        url_info['og:title'] = "null"
+      if (!url_info['og:description'])
+        url_info['og:description'] = "null"
+      if (!url_info['og:img'])
+        url_info['og:img'] = "null"
+      if (!url_info['og:url'])
+        url_info['og:url'] = "null"
+
+      res.send(url_info);
     });
-    //res.send('안녕하세요 저는<br>[' + master_id + ']서버의<br>워커 [' + cluster.worker.id + '] 입니다.');
   });
 
   app.get("/workerKiller", function (req, res) {
