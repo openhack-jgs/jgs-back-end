@@ -132,24 +132,37 @@ if (cluster.isMaster) {
   // 좋아요한 Post들을 모아보는 기능
   app.post('/liked_post', function (req, res) {
     console.log(req.body.client_id);
-    db.collection('post').where('client_id', '==', req.body.client_id).get()
+    db.collection('user').where('client_id', '==', req.body.client_id).get()
       .then((docRef) => {
         docRef.forEach(doc => {
-          console.log(doc.data());
-          /*
-            console.log('og:title: ', doc.data()['og:title']);
-            console.log('og:img: ', doc.data()['og:img']);
-            console.log('og:description: ', doc.data()['og:description']);
-            console.log('og:url: ', doc.data()['og:url']);
-            console.log('like_count: ', doc.data()['like_count']);
-            console.log('level: ', doc.data()['level']);
-            console.log('level_count: ', doc.data()['level_count']);
-            console.log('tags: ', doc.data()['tags']);
-            console.log('tag_A: ', doc.data()['tag_A']);
-            console.log('tag_B: ', doc.data()['tag_B']);
-          */
+          doc.data()['liked_posts'].forEach(post_id => {
+            console.log(post_id);
+            db.collection('post').where('post_id', '==', post_id).get()
+            .then((docRef2) => {
+              docRef2.forEach(doc2 => {
+                var posts = JSON.stringify(doc2.data());
+                console.log(typeof(posts));
+                /*
+                  console.log('og:title: ', doc2.data()['og:title']);
+                  console.log('og:img: ', doc2.data()['og:img']);
+                  console.log('og:description: ', doc2.data()['og:description']);
+                  console.log('og:url: ', doc2.data()['og:url']);
+                  console.log('like_count: ', doc2.data()['like_count']);
+                  console.log('level: ', doc2.data()['level']);
+                  console.log('level_count: ', doc2.data()['level_count']);
+                  console.log('tags: ', doc2.data()['tags']);
+                  console.log('tag_A: ', doc2.data()['tag_A']);
+                  console.log('tag_B: ', doc2.data()['tag_B']);
+                */
+                res.send(posts);
+              })
+            })
+            .catch((error) => {
+              console.log('error adding document: ', error);
+              res.send('실패');
+            });
+          })
         });
-        res.send('성공');
       })
       .catch((error) => {
         console.log('error adding document: ', error);
