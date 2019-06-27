@@ -101,13 +101,13 @@ if (cluster.isMaster) {
   })
 
   // 메인 페이지
-  app.get('/main_page', function (req, res) {
+  app.get('/main_page', async (req, res) => {
     var stacks;
     var posts;
     var stacks_arr = [];
     var posts_arr = [];
     var json_arr = [];
-    db.collection('stack').get()
+    await db.collection('stack').get()
       .then((docRef) => {
         docRef.forEach(doc => {
           // stacks = JSON.stringify(doc.data());
@@ -122,7 +122,7 @@ if (cluster.isMaster) {
       });
     
     // 최근에 작성된 글 10개를 조회
-    db.collection('post').orderBy('time', 'desc').limit(10).get()
+    await db.collection('post').orderBy('time', 'desc').limit(10).get()
       .then((docRef) => {
         docRef.forEach(doc => {
           // posts = JSON.stringify(doc.data());
