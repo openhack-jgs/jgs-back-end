@@ -111,9 +111,33 @@ if (cluster.isMaster) {
     res.send('like');
   })
 
-  // Post 작성 기능
+  /**
+   * Post 작성 기능
+   * POST http://106.10.34.9:3000/write_post
+   * body: {
+   *   client_id: string,
+   *   og_title: string,
+   *   og_description: string,
+   *   og_img: string,
+   *   og_url: string,
+   *   tag: [],
+   *   level: number,
+   *   level_count: number
+   *   time: datetime 
+   * }
+   */
   app.post('/write_post', function (req, res) {
-    res.send('write_post');
+    db.collection('post').add({
+      'client_id': '',
+      'og:title': '',
+      'og:description': '',
+      'og:img': '',
+      'og:url': '',
+      'tag': [],
+      'level': 0,
+      'level_count': 1,
+      'time': 0,
+    })
   });
 
   // Post 피드백 기능
