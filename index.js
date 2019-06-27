@@ -58,7 +58,7 @@ if (cluster.isMaster) {
 } else if (cluster.isWorker) {
   const express = require('express');
   const app = express();
-  // CORS
+  // CORS Allow
   app.all('/*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
