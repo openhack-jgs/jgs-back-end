@@ -104,8 +104,8 @@ if (cluster.isMaster) {
   app.get('/main_page', function (req, res) {
     var stacks;
     var posts;
-    var stacks_arr = [];
-    var posts_arr = [];
+    var posts33_arr = [];var stac2ks_arr = [];
+    var posts33_arr = [];
     var json_arr = [];
     db.collection('stack').get()
       .then((docRef) => {
