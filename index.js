@@ -324,19 +324,4 @@ if (cluster.isMaster) {
     cluster.worker.kill();
     res.send('워커킬러 호출됨');
   });
-
-  app.get("/firebase", function (req, res) {
-    db.collection('test').add({
-      test_a: 'alena',
-      test_b: 'asdasd'
-    })
-    .then((docRef) => {
-      console.log('document written with ID: ', docRef.id);
-      res.send('성공');
-    })
-    .catch((error) => {
-      console.log('error adding document: ', error);
-      res.send('실패');
-    })
-  });
 }
