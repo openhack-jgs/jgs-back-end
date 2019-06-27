@@ -6,7 +6,7 @@ const port = 3000;
 //키생성 - 서버 확인용
 const instance_id = uuid.v4();
 
-/**
+/*
  * 워커 생성
  */
 const cpuCount = os.cpus().length; //CPU 수
@@ -58,14 +58,16 @@ if (cluster.isMaster) {
 } else if (cluster.isWorker) {
     const express = require('express');
     const app = express();
-		const request = require('request');
-		const cheerio = require('cheerio');
+	const request = require('request');
+	const cheerio = require('cheerio');
 
     const admin = require('firebase-admin');
     const key = {
-			/*
-			*/
+        /*
+            개인키 정보
+        */
     }
+      
     admin.initializeApp({
         credential: admin.credential.cert(key)
     });
@@ -87,35 +89,82 @@ if (cluster.isMaster) {
         }
     });
 
+    app.get('/', function (req, res) {
+        res.send('root');
+    })
+
+    // 메인 페이지
+    app.get('/main_page', function (req, res) {
+        res.send('main_page');
+    });
+
+    // 키워드 검색 기능
+    app.get('/search', function (req, res) {
+        res.send('search');
+    });
+
+    // 태그 값을 이용한 필터링 검색 기능
+    app.get('/search_filter', function (req, res) {
+        res.send('search_filter');
+    });
+
+    // Post 좋아요 기능
+    app.post('/like', function (req, res) {
+        res.send('like');
+    })
+
+    // URL에 대한 미리보기 정보들을 크롤링하는 기능
     app.get('/analysis_url', function (req, res) {
-			//request.get({url: 'https://inthewalter.github.io/'}, function(err, res, body) {
-			let arr = []
-			request.get({url: 'https://dev.to/ananyaneogi/html-can-do-that-c0n'}, function(err, res2, body) {
-				const $ = cheerio.load(body);
-				console.log("start");
-				const cnt = $("meta")
-				for (let i = 0; i < cnt.length; i++) {
-					if (cnt[i]['attribs']['property'] === undefined) {
-						//console.log('non-property');
-					}
-					else {
-						const data = {
-							property : cnt[i]['attribs']['property'],
-							content : cnt[i]['attribs']['content']
-						}
-						arr.push(data);
-						console.log(data);
-					}
-				}
-				console.log("end");
-			res.send(arr);
-			});
+		//request.get({url: 'https://inthewalter.github.io/'}, function(err, res, body) {
+        let arr = []
+        request.get({url: 'https://dev.to/ananyaneogi/html-can-do-that-c0n'}, function(err, res2, body) {
+            const $ = cheerio.load(body);
+            console.log("start");
+            const cnt = $("meta")
+            for (let i = 0; i < cnt.length; i++) {
+                if (cnt[i]['attribs']['property'] === undefined) {
+                    //console.log('non-property');
+                }
+                else {
+                    const data = {
+                        property : cnt[i]['attribs']['property'],
+                        content : cnt[i]['attribs']['content']
+                    }
+                    arr.push(data);
+                    console.log(data);
+                }
+            }
+            console.log("end");
+        res.send(arr);
+        });
         //res.send('안녕하세요 저는<br>[' + master_id + ']서버의<br>워커 [' + cluster.worker.id + '] 입니다.');
     });
+
+    // Post 작성 기능
+    app.post('/write_post', function (req, res) {
+        res.send('write_post');
+    });
+
+    // Post 피드백 기능
+    app.post('/feedback_post', function (req, res) {
+        res.send('feedback_post');
+    });
+
+    // Post 허위 정보 신고 기능
+    app.post('/report_post', function (req, res) {
+        res.send('report_post');
+    });
+
+    // 좋아요한 Post들을 모아보는 기능
+    app.post('/liked_post', function (req, res) {
+        res.send('liked_post');
+    })
+
     app.get("/workerKiller", function (req, res) {
         cluster.worker.kill();
         res.send('워커킬러 호출됨');
     });
+
     app.get("/firebase", function (req, res) {
         db.collection('test').add({
             test_a: 'alena',
