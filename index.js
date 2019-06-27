@@ -199,7 +199,30 @@ if (cluster.isMaster) {
 
   // Post 좋아요 기능
   app.post('/like', function (req, res) {
-    res.send('like');
+    var post_id = req.body.post_id;
+    let count;
+    console.log(post_id);
+    db.collection('post').where('post_id', '==', post_id).get()
+      .then((docRef) => {
+        docRef.forEach(doc => {
+            count = doc.data()['like_count'];
+            console.log(count);
+            count += 1;
+          })
+          db.collection('post').doc(post_id).update({
+            like_count: count
+          }).then(() => {
+            res.status(200);
+            res.send('OK');
+          }).catch((error) => {
+            console.log(error);
+            res.send('FAIL'); 
+          })
+      })
+      .catch((error) => {
+        console.log('error get document: ', error);
+        res.send('실패');
+      });
   });
 
   /**
