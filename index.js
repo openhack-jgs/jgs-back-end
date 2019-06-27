@@ -99,29 +99,22 @@ if (cluster.isMaster) {
   app.get('/', function (req, res) {
     res.send('root');
   })
-  n((docRef) => {
-    docRef.forEach(doc => {
-      stacks = JSON.stringify(doc.data());
-      stacks_arr.push(stacks);
-    })
-    json_arr.push(stacks_arr);
-  })
+  
   // 메인 페이지
   app.get('/main_page', function (req, res) {
-    var sapp.get('/main_page', function (req, res) {
-      var stacks;
-      var posts;
-      var posts33_arr = []tacks;
+    var stacks;
     var posts;
-    var posts33_arr = [];var stac2ks_arr = [];
-    var posts33_arr = [];
-    app.get('/main_page', function (req, res) {
-      var stacks;
-      var posts;
-      var posts33_arr = []
+    var stacks_arr = [];
+    var posts_arr = [];
     var json_arr = [];
     db.collection('stack').get()
-      .the
+      .then((docRef) => {
+        docRef.forEach(doc => {
+          stacks = JSON.stringify(doc.data());
+          stacks_arr.push(stacks);
+        })
+        json_arr.push(stacks_arr);
+      })
       .catch((error) => {
         console.log('error get document: ', error);
         res.send('실패');
