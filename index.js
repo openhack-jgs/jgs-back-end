@@ -144,7 +144,35 @@ if (cluster.isMaster) {
 
   // 태그 값을 이용한 필터링 검색 기능
   app.get('/search_filter', function (req, res) {
-    res.send('search_filter');
+    var posts;
+    if (req.query.stack != null && req.query.tag != null) {
+      db.collection('post').where('tag.' + req.query.stack, '==', true).where('tag.' + req.query.tag, '==', true).get()
+      .then((docRef) => {
+        docRef.forEach(doc => {
+          console.log(doc.data());
+          posts = JSON.stringify(doc.data());
+        })
+        res.send(posts);
+      })
+      .catch((error) => {
+        console.log('error get document: ', error);
+        res.send('실패');
+      });
+    }
+    else if (req.query.stack != null && req.query.tag == null) {
+      db.collection('post').where('tag.' + req.query.stack, '==', true).get()
+      .then((docRef) => {
+        docRef.forEach(doc => {
+          console.log(doc.data());
+          posts = JSON.stringify(doc.data());
+        })
+        res.send(posts);
+      })
+      .catch((error) => {
+        console.log('error get document: ', error);
+        res.send('실패');
+      });
+    }
   });
 
   // Post 좋아요 기능
@@ -223,17 +251,15 @@ if (cluster.isMaster) {
 
   // 좋아요한 Post들을 모아보는 기능
   app.post('/liked_post', function (req, res) {
-    console.log(req.body.client_id);
+    var posts;
     db.collection('user').where('client_id', '==', req.body.client_id).get()
       .then((docRef) => {
         docRef.forEach(doc => {
           doc.data()['liked_posts'].forEach(post_id => {
-            console.log(post_id);
             db.collection('post').where('post_id', '==', post_id).get()
             .then((docRef2) => {
               docRef2.forEach(doc2 => {
-                var posts = JSON.stringify(doc2.data());
-                console.log(typeof(posts));
+                posts = JSON.stringify(doc2.data());
                 /*
                   console.log('og:title: ', doc2.data()['og:title']);
                   console.log('og:img: ', doc2.data()['og:img']);
