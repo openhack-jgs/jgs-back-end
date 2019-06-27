@@ -94,7 +94,7 @@ if (cluster.isMaster) {
   });
 
   // POST 방식 body를 파싱
-  app.use(bodyPaser.urlencoded({ extended: true}));
+  app.use(bodyPaser.urlencoded({ extended: true }));
 
   app.get('/', function (req, res) {
     res.send('root');
@@ -139,20 +139,38 @@ if (cluster.isMaster) {
 
   // 키워드 검색 기능
   app.get('/search', function (req, res) {
-    res.send('search');
+    var posts;
+    var posts_arr = [];
+    if (req.query.keyword != null) {
+      db.collection('post').where('tag.' + req.query.keyword, '==', true).get()
+      .then((docRef) => {
+        docRef.forEach(doc => {
+          posts = JSON.stringify(doc.data());
+          posts_arr.push(posts);
+        })
+        console.log(posts_arr);
+        res.send(posts_arr);
+      })
+      .catch((error) => {
+        console.log('error get document: ', error);
+        res.send('실패');
+      });
+    }
   });
 
   // 태그 값을 이용한 필터링 검색 기능
   app.get('/search_filter', function (req, res) {
     var posts;
+    var posts_arr = [];
     if (req.query.stack != null && req.query.tag != null) {
       db.collection('post').where('tag.' + req.query.stack, '==', true).where('tag.' + req.query.tag, '==', true).get()
       .then((docRef) => {
         docRef.forEach(doc => {
-          console.log(doc.data());
           posts = JSON.stringify(doc.data());
+          posts_arr.push(posts);
         })
-        res.send(posts);
+        console.log(posts_arr);
+        res.send(posts_arr);
       })
       .catch((error) => {
         console.log('error get document: ', error);
@@ -163,22 +181,26 @@ if (cluster.isMaster) {
       db.collection('post').where('tag.' + req.query.stack, '==', true).get()
       .then((docRef) => {
         docRef.forEach(doc => {
-          console.log(doc.data());
           posts = JSON.stringify(doc.data());
+          posts_arr.push(posts);
         })
-        res.send(posts);
+        console.log(posts_arr);
+        res.send(posts_arr);
       })
       .catch((error) => {
         console.log('error get document: ', error);
         res.send('실패');
       });
     }
+    else {
+      res.send('please check filter!!!')
+    }
   });
 
   // Post 좋아요 기능
   app.post('/like', function (req, res) {
     res.send('like');
-  })
+  });
 
   /**
    * Post 작성 기능
