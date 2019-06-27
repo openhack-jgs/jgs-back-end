@@ -313,6 +313,7 @@ if (cluster.isMaster) {
    */
   app.post('/write_post', function (req, res) {
     let post_info = req.body;
+    post_info['like_count'] = 0;
     post_info['level_count'] = 1;
     post_info['time'] = Date();
     post_info['comment'] = []
