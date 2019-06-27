@@ -110,7 +110,8 @@ if (cluster.isMaster) {
     db.collection('stack').get()
       .then((docRef) => {
         docRef.forEach(doc => {
-          stacks = JSON.stringify(doc.data());
+          // stacks = JSON.stringify(doc.data());
+          stacks = (doc.data());
           stacks_arr.push(stacks);
         })
         json_arr.push(stacks_arr);
@@ -124,7 +125,8 @@ if (cluster.isMaster) {
     db.collection('post').orderBy('time', 'desc').limit(10).get()
       .then((docRef) => {
         docRef.forEach(doc => {
-          posts = JSON.stringify(doc.data());
+          // posts = JSON.stringify(doc.data());
+          posts = (doc.data());
           posts_arr.push(posts);
         })
         json_arr.push(posts_arr);
@@ -145,7 +147,7 @@ if (cluster.isMaster) {
       db.collection('post').where('tag.' + req.query.keyword, '==', true).get()
       .then((docRef) => {
         docRef.forEach(doc => {
-          posts = JSON.stringify(doc.data());
+          posts = (doc.data());
           posts_arr.push(posts);
         })
         console.log(posts_arr);
@@ -166,7 +168,7 @@ if (cluster.isMaster) {
       db.collection('post').where('tag.' + req.query.stack, '==', true).where('tag.' + req.query.tag, '==', true).get()
       .then((docRef) => {
         docRef.forEach(doc => {
-          posts = JSON.stringify(doc.data());
+          posts = (doc.data());
           posts_arr.push(posts);
         })
         console.log(posts_arr);
@@ -181,7 +183,7 @@ if (cluster.isMaster) {
       db.collection('post').where('tag.' + req.query.stack, '==', true).get()
       .then((docRef) => {
         docRef.forEach(doc => {
-          posts = JSON.stringify(doc.data());
+          posts = (doc.data());
           posts_arr.push(posts);
         })
         console.log(posts_arr);
@@ -306,7 +308,7 @@ if (cluster.isMaster) {
             db.collection('post').where('post_id', '==', post_id).get()
             .then((docRef2) => {
               docRef2.forEach(doc2 => {
-                posts = JSON.stringify(doc2.data());
+                posts = (doc2.data());
                 /*
                   console.log('og:title: ', doc2.data()['og:title']);
                   console.log('og:img: ', doc2.data()['og:img']);
