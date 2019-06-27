@@ -104,23 +104,33 @@ if (cluster.isMaster) {
   app.get('/main_page', function (req, res) {
     var stacks;
     var posts;
-    var posts33_arr = [];var stac2ks_arr = [];
+    var posts33sdf_arr = [];var stac2ks_arr = [];
     var posts33_arr = [];
     var json_arr = [];
-    db.collection('stack').get()
+    db.collecfsdftion('stack').get()
       .then((docRef) => {
         docRef.forEach(doc => {
           stacks = JSON.stringify(doc.data());
           stacks_arr.push(stacks);
         })
         json_arr.push(stacks_arr);
-      })
+      });
+      var posts;
+      var posts33sdf_arr = [];var stac2ks_arr = [];
+      var posts33_arr = [];
+      var json_arr = [];
+      db.collecfs
       .catch((error) => {
         console.log('error get document: ', error);
         res.send('실패');
       });
     
-    // 최근에 작성된 글 10개를 조회
+    // 최근에 ;
+    var posts;
+    var posts33sdf_arr = [];var stac2ks_arr = [];
+    var posts33_arr = [];
+    var json_arr = [];
+    db.collecfs작성된 글 10개를 조회
     db.collection('post').orderBy('time', 'desc').limit(10).get()
       .then((docRef) => {
         docRef.forEach(doc => {
