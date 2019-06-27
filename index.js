@@ -138,6 +138,12 @@ if (cluster.isMaster) {
       'level_count': 1,
       'time': 0,
     })
+    .catch((docRef) => {
+      res.send('')
+    })
+    .error((error) => {
+
+    })
   });
 
   // Post 피드백 기능
