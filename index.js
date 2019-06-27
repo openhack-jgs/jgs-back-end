@@ -132,6 +132,8 @@ if (cluster.isMaster) {
   })
 
   // URL에 대한 미리보기 정보들을 크롤링하는 기능
+  // GET http://106.10.34.9:3000/analysis_url?url=https://inthewalter.github.io
+  // TODO: http or https 를 안썼을 때, 받아오지 않음
   app.get('/analysis_url', function (req, res) {
     request.get({url: req.param('url')}, function(err, res2, body) {
       const $ = cheerio.load(body);
