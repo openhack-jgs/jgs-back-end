@@ -130,7 +130,6 @@ if (cluster.isMaster) {
           posts_arr.push(posts);
         })
         json_arr.push(posts_arr);
-        console.log(json_arr);
         res.send(json_arr);
       })
       .catch((error) => {
@@ -150,7 +149,6 @@ if (cluster.isMaster) {
           posts = (doc.data());
           posts_arr.push(posts);
         })
-        console.log(posts_arr);
         res.send(posts_arr);
       })
       .catch((error) => {
@@ -171,7 +169,6 @@ if (cluster.isMaster) {
           posts = (doc.data());
           posts_arr.push(posts);
         })
-        console.log(posts_arr);
         res.send(posts_arr);
       })
       .catch((error) => {
@@ -186,7 +183,6 @@ if (cluster.isMaster) {
           posts = (doc.data());
           posts_arr.push(posts);
         })
-        console.log(posts_arr);
         res.send(posts_arr);
       })
       .catch((error) => {
@@ -236,7 +232,7 @@ if (cluster.isMaster) {
             like_count: count
           }).then(() => {
             res.status(200);
-            res.send('OK');
+            res.send('like_success');
           }).catch((error) => {
             console.log(error);
             res.send('FAIL'); 
@@ -286,7 +282,7 @@ if (cluster.isMaster) {
             like_count: count
           }).then(() => {
             res.status(200);
-            res.send('OK');
+            res.send('dislike success');
           }).catch((error) => {
             console.log(error);
             res.send('FAIL'); 
@@ -381,18 +377,6 @@ if (cluster.isMaster) {
             .then((docRef2) => {
               docRef2.forEach(doc2 => {
                 posts = (doc2.data());
-                /*
-                  console.log('og:title: ', doc2.data()['og:title']);
-                  console.log('og:img: ', doc2.data()['og:img']);
-                  console.log('og:description: ', doc2.data()['og:description']);
-                  console.log('og:url: ', doc2.data()['og:url']);
-                  console.log('like_count: ', doc2.data()['like_count']);
-                  console.log('level: ', doc2.data()['level']);
-                  console.log('level_count: ', doc2.data()['level_count']);
-                  console.log('tags: ', doc2.data()['tags']);
-                  console.log('tag_A: ', doc2.data()['tag_A']);
-                  console.log('tag_B: ', doc2.data()['tag_B']);
-                */
               })
               res.send(posts);
             })
