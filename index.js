@@ -125,27 +125,21 @@ if (cluster.isMaster) {
    *   og_url: string,
    *   tag: [],
    *   level: number,
-   *   level_count: number
-   *   time: datetime 
    * }
    */
   app.post('/write_post', function (req, res) {
-    db.collection('post').add({
-      'client_id': '',
-      'og:title': '',
-      'og:description': '',
-      'og:img': '',
-      'og:url': '',
-      'tag': [],
-      'level': 0,
-      'level_count': 1,
-      'time': 0,
-    })
-    .catch((docRef) => {
-      res.send('')
-    })
-    .error((error) => {
+    let post_info = req.body;
+    post_info['level_count'] = 1;
+    post_info['time'] = Date();
 
+    db.collection('post').add(post_info)
+    .then((docRef) => {
+      res.status(200);
+      res.send('OK');
+    })
+    .catch((error) => {
+      console.log(error);
+      res.send('FAIL');
     })
   });
 
