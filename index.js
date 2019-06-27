@@ -60,7 +60,7 @@ if (cluster.isMaster) {
   const app = express();
   const request = require('request');
   const cheerio = require('cheerio');
-
+  const bodyPaser = require('body-parser');
 
   const admin = require('firebase-admin');
   const key = require('./key/firebaseKey.json'); 
@@ -85,7 +85,10 @@ if (cluster.isMaster) {
     if (msg.cmd === 'MASTER_ID') {
       master_id = msg.master_id;
     }
-  });  
+  });
+
+  // POST 방식 body를 파싱
+  app.use(bodyPaser.urlencoded({ extended: true}));
 
   app.get('/', function (req, res) {
     res.send('root');
@@ -158,7 +161,30 @@ if (cluster.isMaster) {
 
   // 좋아요한 Post들을 모아보는 기능
   app.post('/liked_post', function (req, res) {
-    res.send('liked_post');
+    console.log(req.body.client_id);
+    db.collection('post').where('client_id', '==', req.body.client_id).get()
+      .then((docRef) => {
+        docRef.forEach(doc => {
+          console.log(doc.data());
+          /*
+            console.log('og:title: ', doc.data()['og:title']);
+            console.log('og:img: ', doc.data()['og:img']);
+            console.log('og:description: ', doc.data()['og:description']);
+            console.log('og:url: ', doc.data()['og:url']);
+            console.log('like_count: ', doc.data()['like_count']);
+            console.log('level: ', doc.data()['level']);
+            console.log('level_count: ', doc.data()['level_count']);
+            console.log('tags: ', doc.data()['tags']);
+            console.log('tag_A: ', doc.data()['tag_A']);
+            console.log('tag_B: ', doc.data()['tag_B']);
+          */
+        });
+        res.send('성공');
+      })
+      .catch((error) => {
+        console.log('error adding document: ', error);
+        res.send('실패');
+      });
   })
 
   // URL에 대한 미리보기 정보들을 크롤링하는 기능
