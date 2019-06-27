@@ -58,6 +58,12 @@ if (cluster.isMaster) {
 } else if (cluster.isWorker) {
   const express = require('express');
   const app = express();
+  // CORS
+  app.all('/*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+  });
   const request = require('request');
   const cheerio = require('cheerio');
   const bodyPaser = require('body-parser');
@@ -146,13 +152,67 @@ if (cluster.isMaster) {
     res.send('like');
   })
 
-  // Post 작성 기능
+  /**
+   * Post 작성 기능
+   * POST http://106.10.34.9:3000/write_post
+   * body: {
+   *   client_id: string,
+   *   og_title: string,
+   *   og_description: string,
+   *   og_img: string,
+   *   og_url: string,
+   *   tag: [],
+   *   level: number,
+   * }
+   */
   app.post('/write_post', function (req, res) {
-    res.send('write_post');
+    let post_info = req.body;
+    post_info['level_count'] = 1;
+    post_info['time'] = Date();
+    post_info['comment'] = []
+    post_info['level'] = Number(post_info['level']);
+
+    db.collection('post').add(post_info)
+    .then((docRef) => {
+      db.collection('post').doc(docRef.id).update({
+        post_id: docRef.id
+      }).then(() => {
+        res.status(200);
+        res.send('OK');
+      }).catch((error) => {
+        console.log(error);
+        res.send('FAIL'); 
+      })
+    }).catch((error) => {
+      console.log(error);
+      res.send('FAIL');
+    })
   });
 
-  // Post 피드백 기능
+  /**
+   * post 피드백 기능
+   * POST http://106.10.34.9:3000/feedback_post
+   * body: {
+   *   client_id: string,
+   *   post_id: string,
+   *   level: number,
+   *   comment: string
+   * }
+   */
   app.post('/feedback_post', function (req, res) {
+    let feedback_info = req.body;
+    feedback_info['time'] = Date();
+    db.collection('post').doc(feedback_info['post_id']).get()
+    .then((docSnapshot) => {
+      let post_info = docSnapshot.data()
+      post_info['level_count'] += 1
+      post_info['level'] += Number(feedback_info['level']);
+      post_info['comment'].push(feedback_info['comment'])
+      db.collection('post').doc(feedback_info['post_id']).update(post_info);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
     res.send('feedback_post');
   });
 
@@ -223,8 +283,8 @@ if (cluster.isMaster) {
         url_info['og:title'] = "null"
       if (!url_info['og:description'])
         url_info['og:description'] = "null"
-      if (!url_info['og:img'])
-        url_info['og:img'] = "null"
+      if (!url_info['og:image'])
+        url_info['og:image'] = "null"
       if (!url_info['og:url'])
         url_info['og:url'] = "null"
 
