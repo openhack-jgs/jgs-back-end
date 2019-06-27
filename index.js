@@ -96,7 +96,39 @@ if (cluster.isMaster) {
 
   // 메인 페이지
   app.get('/main_page', function (req, res) {
-    res.send('main_page');
+    var stacks;
+    var posts;
+    var stacks_arr = [];
+    var posts_arr = [];
+    var json_arr = [];
+    db.collection('stack').get()
+      .then((docRef) => {
+        docRef.forEach(doc => {
+          stacks = JSON.stringify(doc.data());
+          stacks_arr.push(stacks);
+        })
+        json_arr.push(stacks_arr);
+      })
+      .catch((error) => {
+        console.log('error get document: ', error);
+        res.send('실패');
+      });
+    
+    // 최근에 작성된 글 10개를 조회
+    db.collection('post').orderBy('time', 'desc').limit(10).get()
+      .then((docRef) => {
+        docRef.forEach(doc => {
+          posts = JSON.stringify(doc.data());
+          posts_arr.push(posts);
+        })
+        json_arr.push(posts_arr);
+        console.log(json_arr);
+        res.send(json_arr);
+      })
+      .catch((error) => {
+        console.log('error get document: ', error);
+        res.send('실패');
+      });
   });
 
   // 키워드 검색 기능
@@ -154,18 +186,18 @@ if (cluster.isMaster) {
                   console.log('tag_A: ', doc2.data()['tag_A']);
                   console.log('tag_B: ', doc2.data()['tag_B']);
                 */
-                res.send(posts);
               })
+              res.send(posts);
             })
             .catch((error) => {
-              console.log('error adding document: ', error);
+              console.log('error get document: ', error);
               res.send('실패');
             });
           })
         });
       })
       .catch((error) => {
-        console.log('error adding document: ', error);
+        console.log('error get document: ', error);
         res.send('실패');
       });
   })
