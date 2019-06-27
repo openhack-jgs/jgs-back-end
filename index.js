@@ -206,14 +206,16 @@ if (cluster.isMaster) {
     .then((docSnapshot) => {
       let post_info = docSnapshot.data()
       post_info['level_count'] += 1
-      post_info['level'] += Number(feedback_info['level']);
+      post_info['level'] = Number(post_info['level']) + Number(feedback_info['level']);
       post_info['comment'].push(feedback_info['comment'])
       db.collection('post').doc(feedback_info['post_id']).update(post_info);
+
+      res.send('OK');
     })
     .catch((error) => {
+      res.send('FAIL');
       console.log(error);
     })
-    res.send('test...');
   });
 
   // Post 허위 정보 신고 기능
