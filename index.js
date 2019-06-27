@@ -99,7 +99,7 @@ if (cluster.isMaster) {
   app.get('/', function (req, res) {
     res.send('root');
   })
-  
+
   // 메인 페이지
   app.get('/main_page', function (req, res) {
     var stacks;
@@ -213,7 +213,7 @@ if (cluster.isMaster) {
     .catch((error) => {
       console.log(error);
     })
-    res.send('feedback_post');
+    res.send('test...');
   });
 
   // Post 허위 정보 신고 기능
