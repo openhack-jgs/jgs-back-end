@@ -6,7 +6,7 @@ const port = 3000;
 //키생성 - 서버 확인용
 const instance_id = uuid.v4();
 
-/**
+/*
  * 워커 생성
  */
 const cpuCount = os.cpus().length; //CPU 수
@@ -61,6 +61,7 @@ if (cluster.isMaster) {
   const request = require('request');
   const cheerio = require('cheerio');
 
+
   const admin = require('firebase-admin');
   const key = require('./key/firebaseKey.json'); 
 
@@ -84,9 +85,53 @@ if (cluster.isMaster) {
     if (msg.cmd === 'MASTER_ID') {
       master_id = msg.master_id;
     }
+  });  
+
+  app.get('/', function (req, res) {
+    res.send('root');
+  })
+
+  // 메인 페이지
+  app.get('/main_page', function (req, res) {
+    res.send('main_page');
   });
 
-  // URL 분석
+  // 키워드 검색 기능
+  app.get('/search', function (req, res) {
+    res.send('search');
+  });
+
+  // 태그 값을 이용한 필터링 검색 기능
+  app.get('/search_filter', function (req, res) {
+    res.send('search_filter');
+  });
+
+  // Post 좋아요 기능
+  app.post('/like', function (req, res) {
+    res.send('like');
+  })
+
+  // Post 작성 기능
+  app.post('/write_post', function (req, res) {
+    res.send('write_post');
+  });
+
+  // Post 피드백 기능
+  app.post('/feedback_post', function (req, res) {
+    res.send('feedback_post');
+  });
+
+  // Post 허위 정보 신고 기능
+  app.post('/report_post', function (req, res) {
+    res.send('report_post');
+  });
+
+  // 좋아요한 Post들을 모아보는 기능
+  app.post('/liked_post', function (req, res) {
+    res.send('liked_post');
+  })
+
+  // URL에 대한 미리보기 정보들을 크롤링하는 기능
   app.get('/analysis_url', function (req, res) {
     //request.get({url: 'https://inthewalter.github.io/'}, function(err, res, body) {
     let arr = []
@@ -132,6 +177,6 @@ if (cluster.isMaster) {
     .catch((error) => {
       console.log('error adding document: ', error);
       res.send('실패');
-    });
+    })
   });
 }
