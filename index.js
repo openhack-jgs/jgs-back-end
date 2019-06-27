@@ -58,6 +58,12 @@ if (cluster.isMaster) {
 } else if (cluster.isWorker) {
   const express = require('express');
   const app = express();
+  // CORS
+  app.all('/*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+  });
   const request = require('request');
   const cheerio = require('cheerio');
   const bodyPaser = require('body-parser');
@@ -131,6 +137,8 @@ if (cluster.isMaster) {
     let post_info = req.body;
     post_info['level_count'] = 1;
     post_info['time'] = Date();
+    post_info['comment'] = []
+    post_info['level'] = Number(post_info['level']);
 
     db.collection('post').add(post_info)
     .then((docRef) => {
@@ -149,8 +157,30 @@ if (cluster.isMaster) {
     })
   });
 
-  // Post 피드백 기능
+  /**
+   * post 피드백 기능
+   * POST http://106.10.34.9:3000/feedback_post
+   * body: {
+   *   client_id: string,
+   *   post_id: string,
+   *   level: number,
+   *   comment: string
+   * }
+   */
   app.post('/feedback_post', function (req, res) {
+    let feedback_info = req.body;
+    feedback_info['time'] = Date();
+    db.collection('post').doc(feedback_info['post_id']).get()
+    .then((docSnapshot) => {
+      let post_info = docSnapshot.data()
+      post_info['level_count'] += 1
+      post_info['level'] += Number(feedback_info['level']);
+      post_info['comment'].push(feedback_info['comment'])
+      db.collection('post').doc(feedback_info['post_id']).update(post_info);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
     res.send('feedback_post');
   });
 
