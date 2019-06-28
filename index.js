@@ -142,8 +142,9 @@ if (cluster.isMaster) {
   app.get('/search', function (req, res) {
     var posts;
     var posts_arr = [];
+    console.log(req.query.keyword);
     if (req.query.keyword != null) {
-      db.collection('post').where('tag.' + req.query.keyword, '==', true).get()
+      db.collection('post').where('tags.' + req.query.keyword, '==', 'true').get()
       .then((docRef) => {
         docRef.forEach(doc => {
           posts = (doc.data());
@@ -163,7 +164,7 @@ if (cluster.isMaster) {
     var posts;
     var posts_arr = [];
     if (req.query.stack != null && req.query.tag != null) {
-      db.collection('post').where('tag.' + req.query.stack, '==', true).where('tag.' + req.query.tag, '==', true).get()
+      db.collection('post').where('tags.' + req.query.stack, '==', 'true').where('tags.' + req.query.tag, '==', 'true').get()
       .then((docRef) => {
         docRef.forEach(doc => {
           posts = (doc.data());
@@ -177,7 +178,7 @@ if (cluster.isMaster) {
       });
     }
     else if (req.query.stack != null && req.query.tag == null) {
-      db.collection('post').where('tag.' + req.query.stack, '==', true).get()
+      db.collection('post').where('tags.' + req.query.stack, '==', 'true').get()
       .then((docRef) => {
         docRef.forEach(doc => {
           posts = (doc.data());
