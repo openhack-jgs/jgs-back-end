@@ -202,13 +202,13 @@ if (cluster.isMaster) {
     post_id_arr.push(post_id);
     let count;
 
-    db.collection('user').where('client_id', '==', req.body.client_id).get()
+    db.collection('users').where('client_id', '==', req.body.client_id).get()
       .then((docRef) => {
         docRef.forEach(doc => {
           doc.data()['liked_posts'].forEach(post => {
             post_id_arr.push(post);
           })
-          db.collection('user').doc(doc.id).update({
+          db.collection('users').doc(doc.id).update({
             liked_posts: post_id_arr
           }).then(() => {
           }).catch((error) => {
@@ -250,7 +250,7 @@ if (cluster.isMaster) {
     var post_id_arr = [];
     let count;
 
-    db.collection('user').where('client_id', '==', req.body.client_id).get()
+    db.collection('users').where('client_id', '==', req.body.client_id).get()
       .then((docRef) => {
         docRef.forEach(doc => {
           doc.data()['liked_posts'].forEach(post => {
@@ -258,7 +258,7 @@ if (cluster.isMaster) {
               post_id_arr.push(post);
             }
           })
-          db.collection('user').doc(doc.id).update({
+          db.collection('users').doc(doc.id).update({
             liked_posts: post_id_arr
           }).then(() => {
           }).catch((error) => {
@@ -411,13 +411,13 @@ if (cluster.isMaster) {
         }
       }
       if (!url_info['og:title'])
-        url_info['og:title'] = "null"
+        url_info['og:title'] = "무제"
       if (!url_info['og:description'])
         url_info['og:description'] = "null"
       if (!url_info['og:image'])
-        url_info['og:image'] = "null"
+        url_info['og:image'] = "https://github.com/openhack-jgs/jgs-front-end/blob/master/assets/img/preview.png?raw=true"
       if (!url_info['og:url'])
-        url_info['og:url'] = "null"
+        url_info['og:url'] = "#"
 
       res.send(url_info);
     });
